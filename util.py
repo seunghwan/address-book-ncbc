@@ -3,8 +3,10 @@ import getopt
 import getpass
 import sys
 import os.path
+from email.mime.text import MIMEText
+import smtplib
 
-def get_userid_and_password(default_domain):
+def get_userid_and_password(default_domain = 'ncbctimothy.org'):
   # try reading login info from config file
   if os.path.exists("user.cfg"):
     config = ConfigParser.RawConfigParser()
@@ -48,3 +50,31 @@ def get_userid_and_password(default_domain):
     sys.exit(2)
 
   return (user, pw)
+
+def send_email(subject, message):
+  if not os.path.exists('subscribers.cfg'):
+    return
+  
+  emails = []
+  config = ConfigParser.RawConfigParser()
+  config.read('subscribers.cfg')
+
+  for subscriber in config.sections():
+    emails.append(config.get(subscriber, 'email'))
+
+  user, pw = get_userid_and_password()
+  server = 'smtp.gmail.com'
+  port = 587
+
+  msg = MIMEText(message)
+  msg['Subject'] = subject
+  msg['To'] = ", ".join(emails)
+  msg['From'] = user
+  email = smtplib.SMTP(server, port)
+  email.starttls()
+  email.login(user, pw)
+  email.sendmail(user, emails, msg.as_string())
+  email.quit()
+
+if __name__=='__main__':
+  send_email("test", "test")

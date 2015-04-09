@@ -6,3 +6,8 @@
 ###########################
 atom/*
 gdata/*
+
+# Config files #
+################
+user.cfg
+spreadsheet.cfg
