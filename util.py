@@ -1,8 +1,21 @@
+import ConfigParser
 import getopt
 import getpass
 import sys
+import os.path
 
 def get_userid_and_password(default_domain):
+  # try reading login info from config file
+  if os.path.exists("user.cfg"):
+    config = ConfigParser.RawConfigParser()
+    config.read('user.cfg')
+    if config.has_section('user'):
+      user = config.get('user', 'id')
+      pw = config.get('user', 'pw')
+      if user.find('@') == -1:
+        user += '@' + default_domain
+      return (user, pw) 
+
   # parse command line options
   try:
     opts, args = getopt.getopt(sys.argv[1:], "", ["user=", "pw="])

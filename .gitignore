@@ -1,0 +1,8 @@
+# Comiled source #
+##################
+*.pyc
+
+# Google mailing list api #
+###########################
+atom/*
+gdata/*
